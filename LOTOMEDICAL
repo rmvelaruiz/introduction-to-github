@@ -1,0 +1,29 @@
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+# Base de datos simulada en memoria
+pacientes = []
+
+# Ruta para agregar un nuevo paciente
+@app.route('/pacientes', methods=['POST'])
+def agregar_paciente():
+    data = request.get_json()
+    pacientes.append(data)
+    return jsonify({"mensaje": "Paciente agregado correctamente."}), 201
+
+# Ruta para obtener todos los pacientes
+@app.route('/pacientes', methods=['GET'])
+def obtener_pacientes():
+    return jsonify(pacientes), 200
+
+# Ruta para obtener un paciente por nombre (simplificado)
+@app.route('/pacientes/<nombre>', methods=['GET'])
+def obtener_paciente_por_nombre(nombre):
+    resultado = [p for p in pacientes if p['nombre'].lower() == nombre.lower()]
+    if resultado:
+        return jsonify(resultado[0]), 200
+    return jsonify({"error": "Paciente no encontrado"}), 404
+
+if __name__ == '__main__':
+    app.run(debug=True)
